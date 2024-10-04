@@ -7,3 +7,11 @@ Werkzeug==3.0.4
 pip install flaskr-1.0.0-py3-none-any.whl
 
 flask --app flaskr init-db
+
+flask --app flaskr run --debug
+
+pytest -W ignore::DeprecationWarning
+
+mkdir -p .venv/var/flaskr-instance
+echo "SECRET_KEY = '$(python -c 'import secrets; print(secrets.token_hex())')'" > instance/config.py
+cat .venv/var/flaskr-instance/config.py
