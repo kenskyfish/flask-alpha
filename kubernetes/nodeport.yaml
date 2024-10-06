@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flask-alpha
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-alpha
+  labels:
+    app: flask-alpha
+  namespace: flask-alpha
+spec:
+  selector:
+    matchLabels:
+      app: flask-alpha
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: flask-alpha
+    spec:
+      containers:
+      - name: flask-alpha
+        image: core.harbor.domain/i15-3535/flask-alpha
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: waitress
+            containerPort: 8080
+        resources:
+          requests:
+            cpu: "0.1"
+          limits:
+            cpu: "0.3"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-alpha
+  namespace: flask-alpha
+spec:
+  type: NodePort
+  selector:
+    app: flask-alpha
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

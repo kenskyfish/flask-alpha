@@ -15,3 +15,6 @@ pytest -W ignore::DeprecationWarning
 mkdir -p .venv/var/flaskr-instance
 echo "SECRET_KEY = '$(python -c 'import secrets; print(secrets.token_hex())')'" > instance/config.py
 cat .venv/var/flaskr-instance/config.py
+
+root@55567cb25d2c:/app# waitress-serve --call flaskr:create_app
+INFO:waitress:Serving on http://0.0.0.0:8080
