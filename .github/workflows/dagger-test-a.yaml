@@ -1,0 +1,16 @@
+name: GitHub Actions Run Dagger
+run-name: ${{ github.actor }} is running dagger 🚀
+on:
+  push:
+    branches: [main]
+jobs:
+  hello:
+    name: hello
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Dagger Function
+        uses: dagger/dagger-for-github@8.0.0
+        with:
+          version: "latest"
+          module: github.com/shykes/daggerverse/hello
+          args: hello --greeting="bonjour" --name="monde"
