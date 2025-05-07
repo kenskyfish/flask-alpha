@@ -6,18 +6,18 @@ from werkzeug.exceptions import abort
 from flaskr.auth import login_required
 from flaskr.db import get_db
 
-bp = Blueprint('blog', __name__)
+bp = Blueprint('main', __name__)
 
 
 @bp.route('/')
 def index():
     db = get_db()
-    posts = db.execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
+    commands = db.execute(
+        'SELECT p.id, title, commandline, created, author_id, username'
+        ' FROM command p JOIN user u ON p.author_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
-    return render_template('blog/index.html', posts=posts)
+    return render_template('main/index.html', commands=commands)
 
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -25,7 +25,7 @@ def index():
 def create():
     if request.method == 'POST':
         title = request.form['title']
-        body = request.form['body']
+        commandline = request.form['commandline']
         error = None
 
         if not title:
@@ -36,41 +36,41 @@ def create():
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO post (title, body, author_id)'
+                'INSERT INTO command (title, commandline, author_id)'
                 ' VALUES (?, ?, ?)',
-                (title, body, g.user['id'])
+                (title, commandline, g.user['id'])
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('main.index'))
 
-    return render_template('blog/create.html')
+    return render_template('main/index.html')
 
 
-def get_post(id, check_author=True):
-    post = get_db().execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
+def get_command(id, check_author=True):
+    command = get_db().execute(
+        'SELECT p.id, title, commandline, created, author_id, username'
+        ' FROM command p JOIN user u ON p.author_id = u.id'
         ' WHERE p.id = ?',
         (id,)
     ).fetchone()
 
-    if post is None:
-        abort(404, f"Post id {id} doesn't exist.")
+    if command is None:
+        abort(404, f"Command id {id} doesn't exist.")
 
-    if check_author and post['author_id'] != g.user['id']:
+    if check_author and command['author_id'] != g.user['id']:
         abort(403)
 
-    return post
+    return command
 
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    post = get_post(id)
+    command = get_command(id)
 
     if request.method == 'POST':
         title = request.form['title']
-        body = request.form['body']
+        commandline = request.form['body']
         error = None
 
         if not title:
@@ -81,21 +81,21 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                'UPDATE post SET title = ?, body = ?'
+                'UPDATE command SET title = ?, commandline = ?'
                 ' WHERE id = ?',
-                (title, body, id)
+                (title, commandline, id)
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('main.index'))
 
-    return render_template('blog/update.html', post=post)
+    return render_template('main/index.html', command=command)
 
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
-    get_post(id)
+    get_command(id)
     db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (id,))
+    db.execute('DELETE FROM command WHERE id = ?', (id,))
     db.commit()
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('main.index'))
