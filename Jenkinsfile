@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                sh 'echo ENV:'
+                sh 'echo $payload ENV:'
                 sh 'env'
                 echo 'Hello Again and again webhook'
             }
