@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                echo $payload
+                sh 'echo $payload'
                 echo 'Hello Again and again webhook'
             }
         }
