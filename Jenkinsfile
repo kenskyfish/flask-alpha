@@ -5,15 +5,7 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                script {
-                    // def githubCause = null
-                    currentBuild.rawBuild.getCauses().each { cause ->
-                        echo cause.getClass().getName()
-                        // if (cause.getClass().getName().contains("GitHubPushCause") || cause.getClass().getName().contains("GitHubCause")) {
-                        //     githubCause = cause
-                        // }
-                    }
-                }
+                echo $payload
                 echo 'Hello Again and again webhook'
             }
         }
