@@ -7,7 +7,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo $PAYLOAD > payload.json'
-                    def triggerPayload = readJSON file: payload.json
+                    def triggerPayload = readJSON file: 'payload.json'
                     echo "Name: ${triggerPayload.repository.full_name}"
                 }
             }
