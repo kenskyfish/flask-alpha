@@ -5,11 +5,12 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                script {
-                    def triggerPayload = readJSON text: param.PAYLOAD
-                    env.NAME = triggerPayload.repository.name
-                }
-                echo env.NAME
+                // script {
+                //     def triggerPayload = readJSON text: param.PAYLOAD
+                //     env.NAME = triggerPayload.repository.name
+                // }
+                // echo env.NAME
+                sh 'echo $PAYLOAD'
             }
         }
     }
