@@ -7,7 +7,7 @@ pipeline {
             steps {
                 sh 'echo ENV:'
                 sh 'env'
-                echo 'Hello.'
+                echo 'Hello. sdag'
             }
         }
     }
