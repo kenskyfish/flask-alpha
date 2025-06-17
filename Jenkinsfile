@@ -1,13 +1,14 @@
-/* groovylint-disable CompileStatic, LineLength, NestedBlockDepth, NoDef, UnnecessaryGetter */
+/* groovylint-disable CompileStatic, LineLength, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
 pipeline {
     agent any
 
     stages {
         stage('Hello') {
             steps {
-                sh 'echo $REPOSITORY'
-                sh 'env'
-                echo 'Hello. sdag'
+                script {
+                    def triggerPayload = readJSON text: env.PAYLOAD
+                }
+                echo triggerPayload.repository.name
             }
         }
     }
