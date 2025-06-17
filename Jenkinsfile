@@ -6,8 +6,7 @@ pipeline {
         stage('Hello') {
             steps {
                 script {
-                    sh 'echo $PAYLOAD > payload.json'
-                    def triggerPayload = readJSON file: payload.json
+                    def triggerPayload = readJSON text: params.PAYLOAD
                     echo "Name: ${triggerPayload.repository.full_name}"
                 }
             }
