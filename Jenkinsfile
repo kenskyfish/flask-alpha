@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                sh 'echo ENV:'
+                sh 'echo $REPOSITORY'
                 sh 'env'
                 echo 'Hello. sdag'
             }
