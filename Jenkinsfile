@@ -6,9 +6,10 @@ pipeline {
         stage('Hello') {
             steps {
                 script {
-                    sh 'echo $PAYLOAD > payload.json'
-                    sh 'wc -c payload.json'
-                    def jsonPayload = readJSON file: 'payload.json'
+                    // sh 'echo $PAYLOAD > payload.json'
+                    // sh 'wc -c payload.json'
+                    // def jsonPayload = readJSON file: 'payload.json'
+                    def jsonPayload = readJSON text: env.PAYLOAD
                     echo "Name: ${jsonPayload.repository.full_name}"
                 }
             }
