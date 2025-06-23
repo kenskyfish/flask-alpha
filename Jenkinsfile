@@ -35,9 +35,6 @@ def initPayload() {
             }
         }
     }
-    //   "added": ["jenkins/one.txt", "jenkins/payload.json", "jenkins/two.txt"],
-    //   "removed": [],
-    //   "modified": []
     currentBuild.displayName = '#' + currentBuild.number + ' ' + env.PAYLOAD_TYPE
 }
 
