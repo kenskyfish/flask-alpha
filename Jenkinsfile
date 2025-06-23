@@ -1,8 +1,8 @@
 /* groovylint-disable CompileStatic, DuplicateStringLiteral, LineLength, MethodReturnTypeRequired, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
 
-jsonPayload = readJSON text: env.PAYLOAD
 
 def initEnvironment() {
+    def jsonPayload = readJSON text: env.PAYLOAD
     if (jsonPayload.containsKey('pull_request')) {
         env.PAYLOAD_TYPE = 'PR'
     }
@@ -25,6 +25,7 @@ pipeline {
             when { expression { return env.PAYLOAD_TYPE == 'PUSH' } }
             steps {
                 script {
+                    def jsonPayload = readJSON text: env.PAYLOAD
                     echo "PUSH: ${jsonPayload.commits[0].id}"
                 }
             }
@@ -33,6 +34,7 @@ pipeline {
             when { expression { return env.PAYLOAD_TYPE == 'PR' } }
             steps {
                 script {
+                    def jsonPayload = readJSON text: env.PAYLOAD
                     echo "PR Action: ${jsonPayload.action}"
                 }
             }
@@ -40,4 +42,4 @@ pipeline {
     }
 }
 
-// curl -v -H "Content-Type: application/json" -X POST -d '{ "app":{ "name":"some value" }}' "http://www.myfuel.ai/generic-webhook-trigger/invoke"
+// curl -v -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "http://www.myfuel.ai/generic-webhook-trigger/invoke"
