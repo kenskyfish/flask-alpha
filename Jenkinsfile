@@ -66,7 +66,7 @@ pipeline {
             when { expression { return env.PAYLOAD_TYPE == 'JENKINS' } }
             steps {
                 script {
-                    echo "SKIP IT - Jenkins only"
+                    echo "SKIP IT - Jenkins changes only"
                 }
             }
         }
