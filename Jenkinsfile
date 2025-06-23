@@ -7,6 +7,7 @@ def initPayload() {
         def jsonPayload = readJSON text: env.PAYLOAD
         if (jsonPayload.containsKey('pull_request')) {
             env.PAYLOAD_TYPE = 'PR'
+            env.PR_BASE_REF = jsonPayload.pull_request.base.ref
         }
         if (jsonPayload.containsKey('commits')) {
             env.PAYLOAD_TYPE = 'PUSH'
@@ -68,6 +69,7 @@ pipeline {
                 script {
                     def jsonPayload = readJSON text: env.PAYLOAD
                     echo "PR Action: ${jsonPayload.action}"
+                    echo "PR Base Ref: $PR_BASE_REF"
                 }
             }
         }
