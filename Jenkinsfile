@@ -1,5 +1,6 @@
 /* groovylint-disable CompileStatic, DuplicateStringLiteral, LineLength, MethodReturnTypeRequired, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
 
+@Field
 def jsonPayload = readJSON text: env.PAYLOAD
 
 def initEnvironment() {
@@ -24,13 +25,17 @@ pipeline {
         stage('PUSH') {
             when { expression { return env.PAYLOAD_TYPE == 'PUSH' } }
             steps {
-                echo "PUSH: ${jsonPayload.commits[0].id}"
+                script {
+                    echo "PUSH: ${jsonPayload.commits[0].id}"
+                }
             }
         }
         stage('PR') {
-            when { expression { return env.PAYLOAD_TYPE == 'PUSH' } }
+            when { expression { return env.PAYLOAD_TYPE == 'PR' } }
             steps {
-                echo "PR Action: ${jsonPayload.action}"
+                script {
+                    echo "PR Action: ${jsonPayload.action}"
+                }
             }
         }
     }
