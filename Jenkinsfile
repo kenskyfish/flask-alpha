@@ -10,8 +10,9 @@ def initPayload() {
         }
         if (jsonPayload.containsKey('commits')) {
             env.PAYLOAD_TYPE = 'PUSH'
+            env.PAYLOAD_REF = jsonPayload.ref // e.g. "ref": "refs/heads/main"
             def touchedFiles = []
-            jsonPayload.commits.each { commit -> 
+            jsonPayload.commits.each { commit ->
                 if (commit.added) {
                     touchedFiles.addAll(commit.added)
                 }
@@ -43,6 +44,9 @@ pipeline {
     environment {
         INIT_PAYLOAD = initPayload()
     }
+    triggers {
+        GenericTrigger causeString: 'Triggered by generic webhook', genericVariables: [[defaultValue: '{}', key: 'PAYLOAD', regexpFilter: '', value: '$']], regexpFilterExpression: '', regexpFilterText: '', token: '', tokenCredentialId: ''
+    }
     stages {
         stage('PUSH') {
             when { expression { return env.PAYLOAD_TYPE == 'PUSH' } }
@@ -66,7 +70,7 @@ pipeline {
             when { expression { return env.PAYLOAD_TYPE == 'JENKINS' } }
             steps {
                 script {
-                    echo "SKIP IT - Jenkins changes only"
+                    echo 'SKIP IT - Jenkins changes only'
                 }
             }
         }
