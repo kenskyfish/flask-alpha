@@ -1,5 +1,7 @@
 /* groovylint-disable CompileStatic, DuplicateStringLiteral, LineLength, MethodReturnTypeRequired, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
 
+import groovy.transform.Field
+
 @Field
 def jsonPayload = readJSON text: env.PAYLOAD
 
