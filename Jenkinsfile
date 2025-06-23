@@ -8,6 +8,33 @@ def initEnvironment() {
     }
     if (jsonPayload.containsKey('commits')) {
         env.PAYLOAD_TYPE = 'PUSH'
+        def touchedFiles = []
+        jsonPayload.commits.each { commit -> 
+            if (commit.added) {
+                sh 'echo COMMIT ADDED'
+                touchedFiles.addAll(commit.added)
+            }
+            if (commit.removed) {
+                sh 'echo COMMIT REMOVED'
+                touchedFiles.addAll(commit.removed)
+            }
+            if (commit.modified) {
+                sh 'echo COMMIT MODIFIED'
+                touchedFiles.addAll(commit.modified)
+            }
+        }
+        if (touchedFiles) {
+            sh 'echo TOUCHED FILES'
+            def allJenkins = true
+            touchedFiles.unique().each { file ->
+                if (!file.startsWith('jenkins')) {
+                    allJenkins = false
+                }
+            }
+            if (allJenkins) {
+                env.PAYLOAD_TYPE = 'JENKINS'
+            }
+        }​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
     }
     //   "added": ["jenkins/one.txt", "jenkins/payload.json", "jenkins/two.txt"],
     //   "removed": [],
