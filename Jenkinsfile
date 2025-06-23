@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                     def jsonPayload = readJSON text: env.PAYLOAD
-                    echo "PUSH: ${jsonPayload.commits[0].id}"
+                    echo "PUSH: $PAYLOAD_REF"
                 }
             }
         }
