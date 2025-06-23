@@ -1,17 +1,35 @@
-/* groovylint-disable CompileStatic, LineLength, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
+/* groovylint-disable CompileStatic, DuplicateStringLiteral, LineLength, MethodReturnTypeRequired, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
+
+def initEnvironment() {
+    def jsonPayload = readJSON text: env.PAYLOAD
+    if (jsonPayload.containsKey('pull_request')) {
+        env.PAYLOAD_TYPE = 'PR'
+    }
+    if (jsonPayload.containsKey('commits')) {
+        env.PAYLOAD_TYPE = 'PUSH'
+    }
+    //   "added": ["jenkins/one.txt", "jenkins/payload.json", "jenkins/two.txt"],
+    //   "removed": [],
+    //   "modified": []
+    currentBuild.displayName = '#' + currentBuild.number + ' ' + env.PAYLOAD_TYPE
+}
+
 pipeline {
     agent any
-
+    environment {
+        INIT_ENV = initEnvironment()
+    }
     stages {
-        stage('Hello') {
+        stage('PUSH') {
+            when { expression { return env.PAYLOAD_TYPE == 'PUSH' } }
             steps {
-                script {
-                    // sh 'echo $PAYLOAD > payload.json'
-                    // sh 'wc -c payload.json'
-                    // def jsonPayload = readJSON file: 'payload.json'
-                    def jsonPayload = readJSON text: env.PAYLOAD
-                    echo "Name: ${jsonPayload.repository.full_name}"
-                }
+                echo "PUSH: ${jsonPayload.commits[0].id}"
+            }
+        }
+        stage('PR') {
+            when { expression { return env.PAYLOAD_TYPE == 'PUSH' } }
+            steps {
+                echo "PR Action: ${jsonPayload.action}"
             }
         }
     }
