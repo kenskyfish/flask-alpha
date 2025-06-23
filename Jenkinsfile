@@ -1,7 +1,6 @@
 /* groovylint-disable CompileStatic, DuplicateStringLiteral, LineLength, MethodReturnTypeRequired, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
 
-
-def initEnvironment() {
+def initPayload() {
     def jsonPayload = readJSON text: env.PAYLOAD
     if (jsonPayload.containsKey('pull_request')) {
         env.PAYLOAD_TYPE = 'PR'
@@ -34,7 +33,7 @@ def initEnvironment() {
             if (allJenkins) {
                 env.PAYLOAD_TYPE = 'JENKINS'
             }
-        }​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+        }
     }
     //   "added": ["jenkins/one.txt", "jenkins/payload.json", "jenkins/two.txt"],
     //   "removed": [],
@@ -45,7 +44,7 @@ def initEnvironment() {
 pipeline {
     agent any
     environment {
-        INIT_ENV = initEnvironment()
+        INIT_PAYLOAD = initPayload()
     }
     stages {
         stage('PUSH') {
@@ -63,6 +62,14 @@ pipeline {
                 script {
                     def jsonPayload = readJSON text: env.PAYLOAD
                     echo "PR Action: ${jsonPayload.action}"
+                }
+            }
+        }
+        stage('JENKINS') {
+            when { expression { return env.PAYLOAD_TYPE == 'JENKINS' } }
+            steps {
+                script {
+                    echo "SKIP IT - Jenkins only"
                 }
             }
         }
