@@ -45,7 +45,12 @@ pipeline {
         INIT_PAYLOAD = initPayload()
     }
     triggers {
-        GenericTrigger causeString: 'Triggered by generic webhook', genericVariables: [[defaultValue: '{}', key: 'PAYLOAD', regexpFilter: '', value: '$']], regexpFilterExpression: '', regexpFilterText: '', token: '', tokenCredentialId: ''
+        GenericTrigger(
+            genericVariables: [
+                [key: 'PAYLOAD', value: '$']
+                ],
+            causeString: 'Generic webhook',
+        )
     }
     stages {
         stage('PUSH') {
