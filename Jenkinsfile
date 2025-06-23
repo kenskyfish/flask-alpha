@@ -1,7 +1,8 @@
 /* groovylint-disable CompileStatic, DuplicateStringLiteral, LineLength, MethodReturnTypeRequired, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
 
+def jsonPayload = readJSON text: env.PAYLOAD
+
 def initEnvironment() {
-    def jsonPayload = readJSON text: env.PAYLOAD
     if (jsonPayload.containsKey('pull_request')) {
         env.PAYLOAD_TYPE = 'PR'
     }
