@@ -1,37 +1,37 @@
 /* groovylint-disable CompileStatic, DuplicateStringLiteral, LineLength, MethodReturnTypeRequired, NestedBlockDepth, NoDef, UnnecessaryGetter, UnusedVariable, VariableTypeRequired */
 
 def initPayload() {
-    def jsonPayload = readJSON text: env.PAYLOAD
-    if (jsonPayload.containsKey('pull_request')) {
-        env.PAYLOAD_TYPE = 'PR'
-    }
-    if (jsonPayload.containsKey('commits')) {
-        env.PAYLOAD_TYPE = 'PUSH'
-        def touchedFiles = []
-        jsonPayload.commits.each { commit -> 
-            if (commit.added) {
-                sh 'echo COMMIT ADDED'
-                touchedFiles.addAll(commit.added)
-            }
-            if (commit.removed) {
-                sh 'echo COMMIT REMOVED'
-                touchedFiles.addAll(commit.removed)
-            }
-            if (commit.modified) {
-                sh 'echo COMMIT MODIFIED'
-                touchedFiles.addAll(commit.modified)
-            }
+    if (env.PAYLOAD == null || env.PAYLOAD == '') {
+        env.PAYLOAD_TYPE = 'NONE'
+    } else {
+        def jsonPayload = readJSON text: env.PAYLOAD
+        if (jsonPayload.containsKey('pull_request')) {
+            env.PAYLOAD_TYPE = 'PR'
         }
-        if (touchedFiles) {
-            sh 'echo TOUCHED FILES'
-            def allJenkins = true
-            touchedFiles.unique().each { file ->
-                if (!file.startsWith('jenkins')) {
-                    allJenkins = false
+        if (jsonPayload.containsKey('commits')) {
+            env.PAYLOAD_TYPE = 'PUSH'
+            def touchedFiles = []
+            jsonPayload.commits.each { commit -> 
+                if (commit.added) {
+                    touchedFiles.addAll(commit.added)
+                }
+                if (commit.removed) {
+                    touchedFiles.addAll(commit.removed)
+                }
+                if (commit.modified) {
+                    touchedFiles.addAll(commit.modified)
                 }
             }
-            if (allJenkins) {
-                env.PAYLOAD_TYPE = 'JENKINS'
+            if (touchedFiles) {
+                def allJenkins = true
+                touchedFiles.unique().each { file ->
+                    if (!file.startsWith('jenkins')) {
+                        allJenkins = false
+                    }
+                }
+                if (allJenkins) {
+                    env.PAYLOAD_TYPE = 'JENKINS'
+                }
             }
         }
     }
